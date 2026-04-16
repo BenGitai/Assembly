@@ -57,73 +57,73 @@ beginLoop:
         str x30 [iChar]
 
         // while (iChar != EOF) 
-        subs x0 iChar EOF
+        subs x0, iChar, EOF
         be      endLoop
 
         // lCharCount++
-        ldr x0 [lCharCount]
-        add x0 x0 1
-        str x0 [lCharCount]
+        ldr x0, [lCharCount]
+        add x0, x0, 1
+        str x0, [lCharCount]
 
         // if (isspace(iChar))
-        ldr x0 [iChar]
+        ldr x0, [iChar]
         bl isspace
         cmp x30
         be elseBlock
 
         // if (iInWord)
-        ldr x0 [iInWord]
+        ldr x0, [iInWord]
         cmp x0
         bne endElse
 
         // iInWord = FALSE
-        mov x0 FALSE
-        str x0 [iInWord]
+        mov x0, FALSE
+        str x0, [iInWord]
         // lWordCount++
-        ldr x0 [lWordCount]
-        add x0 x0 1
-        str x0 [lWordCount]
+        ldr x0, [lWordCount]
+        add x0, x0, 1
+        str x0, [lWordCount]
         // skip else block
         b endElse
 
 elseBlock:
         // if (! iInWord)
-        ldr x0 [iInWord]
+        ldr x0, [iInWord]
         cmp iInWord
         bne endElse
         // inWord = TRUE
-        mov x0 TRUE
-        str x0 [iInWord]
+        mov x0, TRUE
+        str x0, [iInWord]
 
 endElse:
         // if (iChar == '\n')
-        ldr x0 [iChar]
-        subs x0 x0 '\n'
+        ldr x0, [iChar]
+        subs x0, x0, '\n'
         cmp x0
         bne beginLoop
         // iLineCount++
-        ldr x0 [iLineCount]
-        add x0 x0 1
-        str x0 [iLineCount]
+        ldr x0, [iLineCount]
+        add x0, x0, 1
+        str x0, [iLineCount]
         b beginLoop
 
 endLoop:
         // if(iInWord)
-        ldr x0 [iInWord]
+        ldr x0, [iInWord]
         cmp iInWord
         bne print
         // lWordCount++
-        ldr x0 [lWordCount]
-        add x0 x0 1
-        str x0 [lWordCount]
+        ldr x0, [lWordCount]
+        add x0, x0, 1
+        str x0, [lWordCount]
 
 print:
         // printf("%7ld %7ld %7ld\n", lLineCount, lWordCount, lCharCount);
-        adr x0 printfFormatStr
-        ldr x1 [iLineCount]
-        ldr x2 [lWordCount]
-        ldr x3 [lCharCount]
+        adr x0, printfFormatStr
+        ldr x1, [iLineCount]
+        ldr x2, [lWordCount]
+        ldr x3, [lCharCount]
         bl printf
         // return 0
-        mov x30 0
+        mov x30, 0
         ret 
