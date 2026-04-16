@@ -54,76 +54,94 @@ beginLoop:
 
         // iChar = getchar()
         bl getchar
-        str x30 [iChar]
+	adr x1, iChar
+        str x0, [x1]
 
         // while (iChar != EOF) 
-        subs x0, iChar, EOF
-        be      endLoop
+	adr x0, iChar
+	ldr x0, [x0]
+	cmp w0, EOF
+        beq      endLoop
 
         // lCharCount++
-        ldr x0, [lCharCount]
-        add x0, x0, 1
-        str x0, [lCharCount]
+	adr x0, lCharCount
+	ldr x1, [x0]
+        add x1, x1, 1
+        str x1, [x0]
 
         // if (isspace(iChar))
-        ldr x0, [iChar]
+	adr x0, iChar
+	ldr x0, [x0]
         bl isspace
-        cmp x30
-        be elseBlock
+        cmp x0, 0
+        beq elseBlock
 
         // if (iInWord)
-        ldr x0, [iInWord]
-        cmp x0
-        bne endElse
+	adr x0, iInWord
+	ldr w0, [x0]
+        cmp w0, wzr
+        beq endElse
 
         // iInWord = FALSE
-        mov x0, FALSE
-        str x0, [iInWord]
+	adr x1, iInWord
+        mov w0, FALSE
+        str w0, [x1]
         // lWordCount++
-        ldr x0, [lWordCount]
+	adr x1, lWordCount
+        ldr x0, [x1]
         add x0, x0, 1
-        str x0, [lWordCount]
+        str x0, [x1]
         // skip else block
         b endElse
 
 elseBlock:
         // if (! iInWord)
-        ldr x0, [iInWord]
-        cmp iInWord
+	adr x1, iInWord
+	ldr x0, [x1]
+        cmp w0, wzr
         bne endElse
         // inWord = TRUE
         mov x0, TRUE
-        str x0, [iInWord]
+        str x0, [x1]
 
 endElse:
         // if (iChar == '\n')
-        ldr x0, [iChar]
+	adr x1, iChar
+	ldr x0, [x1]
         subs x0, x0, '\n'
-        cmp x0
+        cmp x0, 0
         bne beginLoop
-        // iLineCount++
-        ldr x0, [iLineCount]
+        // lLineCount++
+	adr x1, lLineCount
+        ldr x0, [x1]
         add x0, x0, 1
-        str x0, [iLineCount]
+        str x0, [x1]
         b beginLoop
 
 endLoop:
         // if(iInWord)
-        ldr x0, [iInWord]
-        cmp iInWord
+	adr x1, iInWord
+        ldr x0, [x1]
+        cmp x0, 0
         bne print
         // lWordCount++
-        ldr x0, [lWordCount]
+	adr x1, lWordCount
+        ldr x0, [x1]
         add x0, x0, 1
-        str x0, [lWordCount]
+        str x0, [x1]
 
 print:
         // printf("%7ld %7ld %7ld\n", lLineCount, lWordCount, lCharCount);
         adr x0, printfFormatStr
-        ldr x1, [iLineCount]
-        ldr x2, [lWordCount]
-        ldr x3, [lCharCount]
+	adr x4, lLineCount
+        ldr x1, [x4]
+	adr x4, lWordCount
+        ldr x2, [x4]
+	adr x4, lCharCount
+        ldr x3, [x4]
         bl printf
         // return 0
-        mov x30, 0
+	ldr x30, [sp]
+        add sp, sp, MAIN_STACK_BYTECOUNT
+	mov x0, 0
         ret 
