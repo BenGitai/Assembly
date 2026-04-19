@@ -183,6 +183,10 @@ BigInt_add:
         //return true;
         mov x0, TRUE
         return:
+        // put pointers back in registers
+        ldr x0, [sp, OADDEND1_OFFSET]
+        ldr x1, [sp, OADDEND2_OFFSET]
+        ldr x2, [sp, OSUM_OFFSET]
         // restore stack frame
         ldr x30, [sp]
         add sp, sp, ADD_STACK_BYTECOUNT
