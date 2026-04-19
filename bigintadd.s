@@ -79,7 +79,7 @@ BigInt_add:
         ble pastMemset
         // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
         ldr x0, [sp, OSUM_OFFSET]
-        ldr x0, [x0, AULDIGITS_OFFSET]
+        add x0, x0, AULDIGITS_OFFSET
         mov x1, 0
         mov x2, MAX_DIGITS
         lsl x2, x2, 3
@@ -107,7 +107,7 @@ BigInt_add:
         ldr x0, [sp, ULSUM_OFFSET] 
         ldr x1, [sp, LINDEX_OFFSET] 
         ldr x2, [sp, OADDEND1_OFFSET]
-        ldr x2, [x2, AULDIGITS_OFFSET]
+        add x2, x2, AULDIGITS_OFFSET
         ldr x2, [x2, x1, lsl 3]
         add x0, x0, x2
         str x0, [sp, ULSUM_OFFSET]
@@ -121,7 +121,7 @@ BigInt_add:
         ldr x0, [sp, ULSUM_OFFSET] 
         ldr x1, [sp, LINDEX_OFFSET] 
         ldr x2, [sp, OADDEND2_OFFSET]
-        ldr x2, [x2, AULDIGITS_OFFSET]
+        add x2, x2, AULDIGITS_OFFSET
         ldr x2, [x2, x1, lsl 3]
         add x0, x0, x2
         str x0, [sp, ULSUM_OFFSET]
@@ -134,7 +134,7 @@ BigInt_add:
         // oSum->aulDigits[lIndex] = ulSum;
         ldr x0, [sp, LINDEX_OFFSET]
         ldr x1, [sp, OSUM_OFFSET]
-        ldr x1, [x1, AULDIGITS_OFFSET]
+        add x1, x1, AULDIGITS_OFFSET
         ldr x2, [sp, ULSUM_OFFSET]
         str x2, [x1, x0, lsl 3]
 
@@ -163,7 +163,7 @@ BigInt_add:
 
         //osum->aulDigits[lSumLength] = 1;
         ldr x0, [sp, OSUM_OFFSET]
-        ldr x0, [x0, AULDIGITS_OFFSET]
+        add x0, x0, AULDIGITS_OFFSET
         ldr x1, [sp, LSUMLENGTH_OFFSET]
         mov x2, 1
         str x2, [x0, x1, lsl 3]
@@ -183,6 +183,10 @@ BigInt_add:
         //return true;
         mov x0, TRUE
         return:
+        // put pointers back in registers
+        ldr x0, [sp, OADDEND1_OFFSET]
+        ldr x1, [sp, OADDEND2_OFFSET]
+        ldr x2, [sp, OSUM_OFFSET]
         // restore stack frame
         ldr x30, [sp]
         add sp, sp, ADD_STACK_BYTECOUNT
