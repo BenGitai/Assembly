@@ -24,7 +24,7 @@ BigInt_larger:
         ble elseBlock1
         // iLarger = lLength1
         str x0, [sp]
-        goto endElse1
+        b endElse1
         elseBlock1:
         // iLarger = lLength2
         str x1, [sp]
@@ -144,8 +144,8 @@ BigInt_add:
         // update loop variable
         ldr x0, [sp, LINDEX_OFFSET]
         add x0, x0, 1
-        str x0, [LINDEX_OFFSET]
-        goto beginLoop
+        str x0, [sp, LINDEX_OFFSET]
+        b beginLoop
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
         ldr x0, [sp, ULCARRY_OFFSET]
@@ -159,7 +159,7 @@ BigInt_add:
 
         //return false;
         mov x0, FALSE
-        goto return
+        b return
 
         // endlSum
         endlSum:
