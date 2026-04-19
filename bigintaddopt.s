@@ -24,7 +24,7 @@ BigInt_larger:
         b endElse1
         elseBlock1:
         // return lLength2
-        mov x0 x1
+        mov x0, x1
         endElse1:
         ret 
     
