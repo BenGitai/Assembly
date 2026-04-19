@@ -62,46 +62,39 @@ BigInt_add:
         // put params into callee saved registers
         ldr x3, [x0]
         mov LENGTH1, x3
-        add x3, x3, 8
-        mov PDIGITS1, x3
+        add x0, x0, 8
+        mov PDIGITS1, x0
         ldr x3, [x1]
         mov LENGTH2, x3
-        add x3, x3, 8
-        mov PDIGITS2, x3
+        add x1, x1, 8
+        mov PDIGITS2, x1
         ldr x3, [x2]
         mov LENGTH3, x3
-        add x3, x3, 8
-        mov PDIGITS3, x3
+        add x2, x2, 8
+        mov PDIGITS3, x2
 
 
         // load llengths into registers
-        ldr x0, [sp, OADDEND1_OFFSET]
-        ldr x0, [x0, LLENGTH_OFFSET]
-        ldr x1, [sp, OADDEND2_OFFSET]
-        ldr x1, [x1, LLENGTH_OFFSET]
+        mov x0, LENGTH1
+        mov x1, LENGTH2
         bl BigInt_larger
         // store result in lSumLength 
-        str x0, [sp, LSUMLENGTH_OFFSET]
+        mov LSUMLENGTH, x0
 
         // if (oSum->lLength > lSumLength)
-        ldr x0, [sp, OSUM_OFFSET]
-        ldr x0, [x0, LLENGTH_OFFSET]
-        ldr x1, [sp, LSUMLENGTH_OFFSET]
-        cmp x0, x1
+        cmp LENGTH3, LSUMLENGTH
         ble pastMemset
         // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
-        ldr x0, [sp, OSUM_OFFSET]
-        add x0, x0, AULDIGITS_OFFSET
+        mov x0, PDIGITS3
         mov x1, 0
         mov x2, MAX_DIGITS
         lsl x2, x2, 3
         bl memset
         pastMemset:
         // ulCarry = 0
-        mov x0, 0
-        str x0, [sp, ULCARRY_OFFSET]
+        mov ULCARRY, 0
         // lIndex = 0
-        str x0, [sp, LINDEX_OFFSET]
+        mov LINDEX, 0
         beginLoop:
         // if (lIndex < lSumLength)
         ldr x0, [sp, LINDEX_OFFSET]
@@ -157,13 +150,11 @@ BigInt_add:
         b beginLoop
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
-        ldr x0, [sp, ULCARRY_OFFSET]
-        cmp x0, 1
+        cmp ULCARRY, 1
         bne ulCarrynot1
 
         //if (lSumLength != MAX_DIGITS) goto endlSum;
-        ldr x0, [sp, LSUMLENGTH_OFFSET]
-        cmp x0, MAX_DIGITS
+        cmp LSUMLENGTH, MAX_DIGITS
         bne endlSum
 
         //return false;
@@ -174,27 +165,41 @@ BigInt_add:
         endlSum:
 
         //osum->aulDigits[lSumLength] = 1;
-        ldr x0, [sp, OSUM_OFFSET]
-        add x0, x0, AULDIGITS_OFFSET
-        ldr x1, [sp, LSUMLENGTH_OFFSET]
+        ldr x0, [PDIGITS3]
         mov x2, 1
-        str x2, [x0, x1, lsl 3]
+        str x2, [x0, LSUMLENGTH, lsl 3]
 
         //lSumLength++;
-        ldr x0, [sp, LSUMLENGTH_OFFSET]
-        add x0, x0, 1
-        str x0, [sp, LSUMLENGTH_OFFSET]
+        add LSUMLENGTH, LSUMLENGTH, 1
 
         //ulCarrynot1
         ulCarrynot1:
         //osum->lLength = lSumLength;
-        ldr x0, [sp, OSUM_OFFSET]
-        ldr x1, [sp, LSUMLENGTH_OFFSET]
-        str x1, [x0, LLENGTH_OFFSET]
+        mov LENGTH3, LSUMLENGTH
 
         //return true;
         mov x0, TRUE
         return:
+        // update BigInt lLengths 
+        sub PDIGITS1, PDIGITS1, 8
+        str LENGTH1, [PDIGITS1]
+        sub PDIGITS2, PDIGITS2, 8
+        str LENGTH2, [PDIGITS2]
+        sub PDIGITS3, PDIGITS3, 8
+        str LENGTH3, [PDIGITS3]
+
+        // restore callee saved registers
+        ldr LENGTH1, [sp, 8]
+        ldr PDIGITS1, [sp, 16]
+        ldr LENGTH2, [sp, 24]
+        ldr PDIGITS2, [sp, 32]
+        ldr LENGTH3, [sp, 40]
+        ldr PDIGITS3, [sp, 48]
+        ldr ULCARRY, [sp, 56]
+        ldr ULSUM, [sp, 64]
+        ldr LINDEX, [sp, 72]
+        ldr LSUMLENGTH, [sp, 80]
+        
         // restore stack frame
         ldr x30, [sp]
         add sp, sp, ADD_STACK_BYTECOUNT
