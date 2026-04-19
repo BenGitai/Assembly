@@ -23,14 +23,14 @@ BigInt_larger:
         cmp x0, x1
         ble elseBlock1
         // iLarger = lLength1
-        str x0 [sp]
+        str x0, [sp]
         goto endElse1
         elseBlock1:
         // iLarger = lLength2
-        str x1 [sp]
+        str x1, [sp]
         endElse1:
         // return iLarger
-        ldr x0 [sp]
+        ldr x0, [sp]
         // restore stack frame
         add sp, sp, LARGER_STACK_BYTECOUNT
         ret 
