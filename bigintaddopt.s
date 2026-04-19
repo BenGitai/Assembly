@@ -97,56 +97,34 @@ BigInt_add:
         mov LINDEX, 0
         beginLoop:
         // if (lIndex < lSumLength)
-        ldr x0, [sp, LINDEX_OFFSET]
-        ldr x1, [sp, LSUMLENGTH_OFFSET]
-        cmp x0, x1
+        cmp LINDEX, LSUMLENGTH
         bge endLoop
         // body of for loop 
         // ulSum = ulCarry
-        ldr x0, [sp, ULCARRY_OFFSET]
-        str x0, [sp, ULSUM_OFFSET]
+        mov ULSUM, ULCARRY
         // ulCarry = 0
-        mov x0, 0
-        str x0, [sp, ULCARRY_OFFSET]
+        mov ULCARRY, 0
         // ulSum += oAddend1->aulDigits[lIndex];
-        ldr x0, [sp, ULSUM_OFFSET] 
-        ldr x1, [sp, LINDEX_OFFSET] 
-        ldr x2, [sp, OADDEND1_OFFSET]
-        add x2, x2, AULDIGITS_OFFSET
-        ldr x2, [x2, x1, lsl 3]
-        add x0, x0, x2
-        str x0, [sp, ULSUM_OFFSET]
-        cmp x0, x2
-        bhs endIf
-        // ulCarry = 1
-        mov x0, 1
-        str x0, [sp, ULCARRY_OFFSET]
-        endIf:
+        ldr x0, [PDIGITS1, LINDEX, lsl 3]
+        add ULSUM, ULSUM, x0
+        cmp ULSUM, x0
+        bhs endIf1
+         // ulCarry = 1
+        mov ULCARRY, 1
+        endIf1:
         // ulSum += oAddend2->aulDigits[lIndex];
-        ldr x0, [sp, ULSUM_OFFSET] 
-        ldr x1, [sp, LINDEX_OFFSET] 
-        ldr x2, [sp, OADDEND2_OFFSET]
-        add x2, x2, AULDIGITS_OFFSET
-        ldr x2, [x2, x1, lsl 3]
-        add x0, x0, x2
-        str x0, [sp, ULSUM_OFFSET]
-        cmp x0, x2
+        ldr x0, [PDIGITS2, LINDEX, lsl 3]
+        add ULSUM, ULSUM, x0
+        cmp ULSUM, x0
         bhs endIf2
-        // ulCarry = 1
-        mov x0, 1
-        str x0, [sp, ULCARRY_OFFSET]
+         // ulCarry = 1
+        mov ULCARRY, 1
         endIf2:
         // oSum->aulDigits[lIndex] = ulSum;
-        ldr x0, [sp, LINDEX_OFFSET]
-        ldr x1, [sp, OSUM_OFFSET]
-        add x1, x1, AULDIGITS_OFFSET
-        ldr x2, [sp, ULSUM_OFFSET]
-        str x2, [x1, x0, lsl 3]
+        str ULSUM, [PDIGITS3, LINDEX, lsl 3]
 
         // update loop variable
-        ldr x0, [sp, LINDEX_OFFSET]
-        add x0, x0, 1
-        str x0, [sp, LINDEX_OFFSET]
+        add LINDEX, LINDEX, 1
         b beginLoop
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
