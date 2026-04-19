@@ -37,14 +37,14 @@ BigInt_larger:
     
     .global BigInt_add
     // stack variables
-    .equ ADD_STACK_BYTECOUNT, 128
-    .equ OADDEND1_OFFSET, 16
-    .equ OADDEND2_OFFSET, 32
-    .equ OSUM_OFFSET, 48
-    .equ ULCARRY_OFFSET, 64
-    .equ ULSUM_OFFSET, 80
-    .equ LINDEX_OFFSET, 96
-    .equ LSUMLENGTH_OFFSET, 112
+    .equ ADD_STACK_BYTECOUNT, 112
+    .equ OADDEND1_OFFSET, 8
+    .equ OADDEND2_OFFSET, 24
+    .equ OSUM_OFFSET, 42
+    .equ ULCARRY_OFFSET, 58
+    .equ ULSUM_OFFSET, 66
+    .equ LINDEX_OFFSET, 94
+    .equ LSUMLENGTH_OFFSET, 102
     
     // struct field offsets
     .equ LLENGTH_OFFSET, 0
