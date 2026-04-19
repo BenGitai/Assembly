@@ -106,7 +106,19 @@ particular, what bugs are in your submission?
 ------------------------------------------------------------------------
 What is your mywc program test plan?
 
+Boundry tests: Starting and ending with white space
+mywc_empty.txt: Empty txt
+mywc_newline.txt: Just a single '\n'
+mywc_nonewline.txt: end without new line
+mywc_whitespace.txt: Just various types of whitespace
 
+Statement test: Run through every line of code;
+isspace {inword, !inword}, !isspace {inword, !inword}, '\n'
+mywc_statement.txt: Runs through every variation of inword and isspace
+
+Stress tests: Large files
+mywc_stress_large.txt: Large number of random characters (45000) 
+[including spaces] and number of lines (999)
 
 ------------------------------------------------------------------------
 What are the CPU times consumed by the programs from Parts 2a, 2b, 2d,
