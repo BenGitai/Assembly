@@ -88,118 +88,106 @@ BigInt_add:
         // ulCarry = 0
         mov x0, 0
         str x0, [sp, ULCARRY_OFFSET]
+        // lIndex = 0
+        str x0, [sp, LINDEX_OFFSET]
+        beginLoop:
+        // if (lIndex < lSumLength)
+        ldr x0, [sp, LINDEX_OFFSET]
+        ldr x1, [sp, LSUMLENGTH_OFFSET]
+        cmp x0, x1
+        ble endLoop
+        // body of for loop 
+        // ulSum = ulCarry
+        ldr x0, [sp, ULCARRY_OFFSET]
+        str x0, [sp, ULSUM_OFFSET]
+        // ulCarry = 0
+        mov x0, 0
+        str x0, [sp, ULCARRY_OFFSET]
+        // ulSum += oAddend1->aulDigits[lIndex];
+        ldr x0, [sp, ULSUM_OFFSET] // x0 has ulSum
+        ldr x1, [sp, LINDEX_OFFSET] // x0 has lIndex
+        ldr x2, [sp, OADDEND1_OFFSET]
+        ldr x2, [x2, AULDIGITS_OFFSET]
+        adr x2, x2
+        ldr x2, [x2, x1, lsl 4]
+        add x0, x0, x2
+        str x0, [sp, ULSUM_OFFSET]
+        cmp x0, x2
+        bhs endIf
+        // ulCarry = 1
+        mov x0, 1
+        str x0, [sp, ULCARRY_OFFSET]
+        endIf:
+        // ulSum += oAddend2->aulDigits[lIndex];
+        ldr x0, [sp, ULSUM_OFFSET] // x0 has ulSum
+        ldr x1, [sp, LINDEX_OFFSET] // x0 has lIndex
+        ldr x2, [sp, OADDEND2_OFFSET]
+        ldr x2, [x2, AULDIGITS_OFFSET]
+        adr x2, x2
+        ldr x2, [x2, x1, lsl 4]
+        add x0, x0, x2
+        str x0, [sp, ULSUM_OFFSET]
+        cmp x0, x2
+        bhs endIf2
+        // ulCarry = 1
+        mov x0, 1
+        str x0, [sp, ULCARRY_OFFSET]
+        endIf2:
+        // oSum->aulDigits[lIndex] = ulSum;
+        ldr x0, [sp, LINDEX_OFFSET]
+        ldr x1, [sp, OSUM_OFFSET]
+        ldr x1, [x1, AULDIGITS_OFFSET]
+        adr x1, x1
+        ldr x2, [sp, ULSUM_OFFSET]
+        str x2, [x1, x0, lsl 4]
 
-
-
-
-
-
-
-
-
-
-        // Must be a multiple of 16
-        .equ    MAIN_STACK_BYTECOUNT, 16
-
-        .global main
-
-main:
-        // Prolog
-        sub     sp, sp, MAIN_STACK_BYTECOUNT
-        str     x30, [sp]
-
-beginLoop:
-
-        // iChar = getchar()
-        bl getchar
-	adr x1, iChar
-        str x0, [x1]
-
-        // while (iChar != EOF) 
-	adr x0, iChar
-	ldr x0, [x0]
-	cmp w0, EOF
-        beq      endLoop
-
-        // lCharCount++
-	adr x0, lCharCount
-	ldr x1, [x0]
-        add x1, x1, 1
-        str x1, [x0]
-
-        // if (isspace(iChar))
-	adr x0, iChar
-	ldr x0, [x0]
-        bl isspace
-        cmp x0, 0
-        beq elseBlock
-
-        // if (iInWord)
-	adr x0, iInWord
-	ldr w0, [x0]
-        cmp w0, wzr
-        beq endElse
-
-        // iInWord = FALSE
-	adr x1, iInWord
-        mov w0, FALSE
-        str w0, [x1]
-        // lWordCount++
-	adr x1, lWordCount
-        ldr x0, [x1]
+        // update loop variable
+        ldr x0, [sp, LINDEX_OFFSET]
         add x0, x0, 1
-        str x0, [x1]
-        // skip else block
-        b endElse
+        str x0, [LINDEX_OFFSET]
+        goto beginLoop
+        endLoop:
+        //if (ulCarry != 1) goto ulCarrynot1;
+        ldr x0, [sp, ULCARRY_OFFSET]
+        cmp x0, 1
+        bne ulCarrynot1
 
-elseBlock:
-        // if (! iInWord)
-	adr x1, iInWord
-	ldr x0, [x1]
-        cmp w0, wzr
-        bne endElse
-        // inWord = TRUE
+        //if (lSumLength != MAX_DIGITS) goto endlSum;
+        ldr x0, [sp, LSUMLENGTH_OFFSET]
+        cmp x0, MAX_DIGITS
+        bne endlSum
+
+        //return false;
+        mov x0, FALSE
+        goto return
+
+        // endlSum
+        endlSum:
+
+        //osum->aulDigits[lSumLength] = 1;
+        ldr x0, [sp, OSUM_OFFSET]
+        ldr x0, [x0, AULDIGITS_OFFSET]
+        adr x0, x0
+        ldr x1, [sp, LSUMLENGTH_OFFSET]
+        mov x2, 1
+        str x2, [x0, x1, lsl 4]
+
+        //lSumLength++;
+        ldr x0, [sp, LSUMLENGTH_OFFSET]
+        add x0, x0, 1
+        str x0, [sp, LSUMLENGTH_OFFSET]
+
+        //ulCarrynot1
+        ulCarrynot1:
+        //osum->lLength = lSumLength;
+        ldr x0, [sp, OSUM_OFFSET]
+        ldr x1, [sp, LSUMLENGTH_OFFSET]
+        str x1, [x0, LLENGTH_OFFSET]
+
+        //return true;
         mov x0, TRUE
-        str x0, [x1]
-
-endElse:
-        // if (iChar == '\n')
-	adr x1, iChar
-	ldr x0, [x1]
-        subs x0, x0, '\n'
-        cmp x0, 0
-        bne beginLoop
-        // lLineCount++
-	adr x1, lLineCount
-        ldr x0, [x1]
-        add x0, x0, 1
-        str x0, [x1]
-        b beginLoop
-
-endLoop:
-        // if(iInWord)
-	adr x1, iInWord
-        ldr x0, [x1]
-        cmp x0, 0
-        bne print
-        // lWordCount++
-	adr x1, lWordCount
-        ldr x0, [x1]
-        add x0, x0, 1
-        str x0, [x1]
-
-print:
-        // printf("%7ld %7ld %7ld\n", lLineCount, lWordCount, lCharCount);
-        adr x0, printfFormatStr
-	adr x4, lLineCount
-        ldr x1, [x4]
-	adr x4, lWordCount
-        ldr x2, [x4]
-	adr x4, lCharCount
-        ldr x3, [x4]
-        bl printf
-        // return 0
-	ldr x30, [sp]
-        add sp, sp, MAIN_STACK_BYTECOUNT
-	mov x0, 0
-        ret 
+        return:
+        // restore stack frame
+        ldr x30, [sp]
+        add sp, sp, ADD_STACK_BYTECOUNT
+        ret
