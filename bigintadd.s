@@ -122,7 +122,6 @@ BigInt_add:
         ldr x1, [sp, LINDEX_OFFSET] 
         ldr x2, [sp, OADDEND2_OFFSET]
         ldr x2, [x2, AULDIGITS_OFFSET]
-        adr x2, x2
         ldr x2, [x2, x1, lsl 3]
         add x0, x0, x2
         str x0, [sp, ULSUM_OFFSET]
