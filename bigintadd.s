@@ -95,7 +95,7 @@ BigInt_add:
         ldr x0, [sp, LINDEX_OFFSET]
         ldr x1, [sp, LSUMLENGTH_OFFSET]
         cmp x0, x1
-        ble endLoop
+        bge endLoop
         // body of for loop 
         // ulSum = ulCarry
         ldr x0, [sp, ULCARRY_OFFSET]
