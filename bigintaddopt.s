@@ -143,9 +143,8 @@ BigInt_add:
         endlSum:
 
         //osum->aulDigits[lSumLength] = 1;
-        ldr x0, [PDIGITS3]
         mov x2, 1
-        str x2, [x0, LSUMLENGTH, lsl 3]
+        str x2, [PDIGITS3, LSUMLENGTH, lsl 3]
 
         //lSumLength++;
         add LSUMLENGTH, LSUMLENGTH, 1
