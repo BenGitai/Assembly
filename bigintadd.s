@@ -48,7 +48,7 @@ BigInt_larger:
     
     // struct field offsets
     .equ LLENGTH_OFFSET, 0
-    .equ AULDIGITS_OFFSET, 16
+    .equ AULDIGITS_OFFSET, 8
 
 BigInt_add:
         // allocate space on stack for params local vars
