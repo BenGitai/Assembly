@@ -15,7 +15,7 @@ static BigInt_T createBigInt(unsigned long ul)
    return oBigInt;
 }
 
-unsigned long void compute(unsigned long a, unsigned long b)
+static void compute(unsigned long a, unsigned long b)
 {
    BigInt_T oFirst = createBigInt(a);
    BigInt_T oSecond = createBigInt(b);
