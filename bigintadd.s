@@ -104,8 +104,8 @@ BigInt_add:
         mov x0, 0
         str x0, [sp, ULCARRY_OFFSET]
         // ulSum += oAddend1->aulDigits[lIndex];
-        ldr x0, [sp, ULSUM_OFFSET] // x0 has ulSum
-        ldr x1, [sp, LINDEX_OFFSET] // x0 has lIndex
+        ldr x0, [sp, ULSUM_OFFSET] 
+        ldr x1, [sp, LINDEX_OFFSET] 
         ldr x2, [sp, OADDEND1_OFFSET]
         ldr x2, [x2, AULDIGITS_OFFSET]
         adr x2, x2
@@ -119,8 +119,8 @@ BigInt_add:
         str x0, [sp, ULCARRY_OFFSET]
         endIf:
         // ulSum += oAddend2->aulDigits[lIndex];
-        ldr x0, [sp, ULSUM_OFFSET] // x0 has ulSum
-        ldr x1, [sp, LINDEX_OFFSET] // x0 has lIndex
+        ldr x0, [sp, ULSUM_OFFSET] 
+        ldr x1, [sp, LINDEX_OFFSET] 
         ldr x2, [sp, OADDEND2_OFFSET]
         ldr x2, [x2, AULDIGITS_OFFSET]
         adr x2, x2
