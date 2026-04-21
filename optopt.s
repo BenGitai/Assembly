@@ -80,18 +80,16 @@ BigInt_add:
         adds LINDEX, xzr, xzr
         cbz LSUMLENGTH, endLoop
         lsl LSUMLENGTH, LSUMLENGTH, 3
-        add LSUMLENGTH, LSUMLENGTH, PDIGITS3
-        mov LINDEX, PDIGITS3
         beginLoop:
         // body of for loop 
         // ulSum += oAddend1->aulDigits[lIndex];
-        ldr x0, [LINDEX]
+        ldr x0, [PDIGITS1, LINDEX]
         // ulSum += oAddend2->aulDigits[lIndex];
-        ldr x1, [LINDEX]
+        ldr x1, [PDIGITS2, LINDEX]
         
         adcs ULSUM, x0, x1
         // oSum->aulDigits[lIndex] = ulSum;
-        str ULSUM, [LINDEX]
+        str ULSUM, [PDIGITS3, LINDEX]
 
         // update loop variable
         add LINDEX, LINDEX, 8
@@ -100,7 +98,6 @@ BigInt_add:
         cbz x0, endLoop
         b beginLoop
         endLoop:
-        sub LSUMLENGTH, LSUMLENGTH, PDIGITS3
         lsr LSUMLENGTH, LSUMLENGTH, 3
         //if (ulCarry != 1) goto ulCarrynot1;
         adc x0, xzr, xzr
