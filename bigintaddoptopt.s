@@ -78,6 +78,7 @@ BigInt_add:
         // lIndex = 0
         // ulCarry = 0
         adds LINDEX, xzr, xzr
+        cbz LSUMLENGTH, endLoop
         beginLoop:
         // body of for loop 
         // ulSum += oAddend1->aulDigits[lIndex];
@@ -92,7 +93,6 @@ BigInt_add:
         // update loop variable
         add LINDEX, LINDEX, 1
         // if (lIndex < lSumLength)
-        cbz LSUMLENGTH, endLoop
         sub x0, LSUMLENGTH, LINDEX
         cbz x0, endLoop
         b beginLoop
