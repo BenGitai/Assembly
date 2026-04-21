@@ -95,7 +95,7 @@ BigInt_add:
         // update loop variable
         add LINDEX, LINDEX, 1
         // if (lIndex < lSumLength)
-        sub x0, LINDEX, LSUMLENGTH
+        sub x0, LSUMLENGTH, LINDEX
         cbz x0, endLoop
         b beginLoop
         endLoop:
