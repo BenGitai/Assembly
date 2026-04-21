@@ -99,7 +99,7 @@ BigInt_add:
         cbz x0, endLoop
         b beginLoop
         endLoop:
-        rsl LSUMLENGTH, LSUMLENGTH, 3
+        lsr LSUMLENGTH, LSUMLENGTH, 3
         //if (ulCarry != 1) goto ulCarrynot1;
         adc x0, xzr, xzr
         cmp x0, 1
