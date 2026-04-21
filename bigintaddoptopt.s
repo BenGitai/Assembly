@@ -86,10 +86,10 @@ BigInt_add:
         adcs ULSUM, xzr, xzr
         // ulSum += oAddend1->aulDigits[lIndex];
         ldr x0, [PDIGITS1, LINDEX, lsl 3]
-        adcs ULSUM, ULSUM, x0
+        adds ULSUM, ULSUM, x0
         // ulSum += oAddend2->aulDigits[lIndex];
         ldr x0, [PDIGITS2, LINDEX, lsl 3]
-        adcs ULSUM, ULSUM, x0
+        adds ULSUM, ULSUM, x0
         // oSum->aulDigits[lIndex] = ulSum;
         str ULSUM, [PDIGITS3, LINDEX, lsl 3]
 
