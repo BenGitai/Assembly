@@ -96,7 +96,7 @@ BigInt_add:
         add LINDEX, LINDEX, 1
         // if (lIndex < lSumLength)
         sub x0, LINDEX, LSUMLENGTH
-        cbz x0 endLoop
+        cbz x0, endLoop
         b beginLoop
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
