@@ -80,7 +80,7 @@ BigInt_add:
         pastMemset:
         // lIndex = 0
         // ulCarry = 0
-        adcs LINDEX, xzr, xzr
+        adds LINDEX, xzr, xzr
         beginLoop:
         // body of for loop 
         // ulSum += oAddend1->aulDigits[lIndex];
