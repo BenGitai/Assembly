@@ -11,9 +11,6 @@
 //----------------------------------------------------------------------
         .section .text
 
-        //--------------------------------------------------------------
-        // Return the larger of lLength1 and lLength2.
-        //--------------------------------------------------------------
     
    .global BigInt_add
     // stack variables
@@ -100,7 +97,7 @@ BigInt_add:
         b beginLoop
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
-        adcs x0, xzr, xzr
+        adc x0, xzr, xzr
         cmp x0, 1
         bne ulCarrynot1
 
