@@ -80,7 +80,8 @@ BigInt_add:
         pastMemset:
         // lIndex = 0
         // ulCarry = 0
-        adds LINDEX, xzr, xzr
+        mov LINDEX, LSUMLENGTH
+        adcs xzr, xzr, xzr
         beginLoop:
         // body of for loop 
         // ulSum += oAddend1->aulDigits[lIndex];
@@ -93,10 +94,8 @@ BigInt_add:
         str ULSUM, [PDIGITS3, LINDEX, lsl 3]
 
         // update loop variable
-        add LINDEX, LINDEX, 1
-        // if (lIndex < lSumLength)
-        sub x0, LINDEX, LSUMLENGTH
-        cbz x0, endLoop
+        sub LINDEX, LINDEX, 1
+        cbz LINDEX, endLoop
         b beginLoop
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
