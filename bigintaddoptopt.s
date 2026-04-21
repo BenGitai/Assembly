@@ -123,14 +123,12 @@ BigInt_add:
         //ulCarrynot1
         ulCarrynot1:
         //osum->lLength = lSumLength;
-        mov LENGTH3, LSUMLENGTH
+        sub PDIGITS3, PDIGITS3, 8
+        str LSUMLENGTH, [PDIGITS3]
 
         //return true;
         mov x0, TRUE
         return:
-        // update oSum lLengths 
-        sub PDIGITS3, PDIGITS3, 8
-        str LENGTH3, [PDIGITS3]
 
         // restore callee saved registers
         ldr LENGTH1, [sp, 8]
