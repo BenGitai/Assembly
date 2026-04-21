@@ -83,7 +83,7 @@ BigInt_add:
         // ulCarry = 0
         mov ULCARRY, 0
         // lIndex = 0
-        mov LINDEX, 0
+        adds LINDEX, xzr, xzr
         beginLoop:
         // body of for loop 
         // ulSum = ulCarry
