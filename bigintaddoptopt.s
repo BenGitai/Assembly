@@ -85,10 +85,10 @@ BigInt_add:
         // body of for loop 
         // ulSum += oAddend1->aulDigits[lIndex];
         ldr x0, [PDIGITS1, LINDEX, lsl 3]
-        mov ULSUM, x0
         // ulSum += oAddend2->aulDigits[lIndex];
-        ldr x0, [PDIGITS2, LINDEX, lsl 3]
-        adcs ULSUM, ULSUM, x0
+        ldr x1, [PDIGITS2, LINDEX, lsl 3]
+        
+        adcs ULSUM, x0, x1
         // oSum->aulDigits[lIndex] = ulSum;
         str ULSUM, [PDIGITS3, LINDEX, lsl 3]
 
