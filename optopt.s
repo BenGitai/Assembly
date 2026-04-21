@@ -91,7 +91,7 @@ BigInt_add:
         
         adcs ULSUM, x0, x1
         // oSum->aulDigits[lIndex] = ulSum;
-        str ULSUM, [PDIGITS3, LINDEX, lsl 3]
+        str ULSUM, [LINDEX]
 
         // update loop variable
         add LINDEX, LINDEX, 8
