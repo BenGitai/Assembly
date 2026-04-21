@@ -148,10 +148,9 @@ BigInt_add:
         ldr PDIGITS2, [sp, 32]
         ldr LENGTH3, [sp, 40]
         ldr PDIGITS3, [sp, 48]
-        ldr ULCARRY, [sp, 56]
-        ldr ULSUM, [sp, 64]
-        ldr LINDEX, [sp, 72]
-        ldr LSUMLENGTH, [sp, 80]
+        ldr ULSUM, [sp, 56]
+        ldr LINDEX, [sp, 64]
+        ldr LSUMLENGTH, [sp, 72]
         
         // restore stack frame
         ldr x30, [sp]
