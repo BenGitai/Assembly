@@ -101,8 +101,8 @@ BigInt_add:
         endLoop:
         //if (ulCarry != 1) goto ulCarrynot1;
         adcs x0, xzr, xzr
-        cmp x0, 0
-        beq ulCarrynot1
+        cmp x0, 1
+        bne ulCarrynot1
 
         //if (lSumLength != MAX_DIGITS) goto endlSum;
         cmp LSUMLENGTH, MAX_DIGITS
