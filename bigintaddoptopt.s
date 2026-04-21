@@ -128,11 +128,7 @@ BigInt_add:
         //return true;
         mov x0, TRUE
         return:
-        // update BigInt lLengths 
-        sub PDIGITS1, PDIGITS1, 8
-        str LENGTH1, [PDIGITS1]
-        sub PDIGITS2, PDIGITS2, 8
-        str LENGTH2, [PDIGITS2]
+        // update oSum lLengths 
         sub PDIGITS3, PDIGITS3, 8
         str LENGTH3, [PDIGITS3]
 
