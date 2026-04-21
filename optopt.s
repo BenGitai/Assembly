@@ -14,15 +14,15 @@
     
    .global BigInt_add
     // stack variables
-    .equ ADD_STACK_BYTECOUNT, 64
+    .equ ADD_STACK_BYTECOUNT, 80
     LENGTH1 .req x19
     PDIGITS1 .req x20
     LENGTH2 .req x21
     PDIGITS2 .req x22
     LENGTH3 .req x23
     PDIGITS3 .req x24
-    ULSUM .req x17
-    LINDEX .req x18
+    ULSUM .req x25
+    LINDEX .req x26
     LSUMLENGTH .req x27
 
 BigInt_add:
@@ -37,7 +37,9 @@ BigInt_add:
         str PDIGITS2, [sp, 32]
         str LENGTH3, [sp, 40]
         str PDIGITS3, [sp, 48]
-        str LSUMLENGTH, [sp, 56]
+        str ULSUM, [sp, 56]
+        str LINDEX, [sp, 64]
+        str LSUMLENGTH, [sp, 72]
 
         // put params into callee saved registers
         ldr x3, [x0]
@@ -76,25 +78,40 @@ BigInt_add:
         // lIndex = 0
         // ulCarry = 0
         adds LINDEX, xzr, xzr
-        cbz LSUMLENGTH, endLoop
+        lsr x4, LSUMLENGTH, 1
+        cbz x4, endLoop
         beginLoop:
         // body of for loop 
         // ulSum += oAddend1->aulDigits[lIndex];
-        ldr x0, [PDIGITS1, LINDEX, lsl 3]
+        ldp x0, x2 [PDIGITS1, LINDEX, lsl 3]
         // ulSum += oAddend2->aulDigits[lIndex];
-        ldr x1, [PDIGITS2, LINDEX, lsl 3]
+        ldp x1, x3 [PDIGITS2, LINDEX, lsl 3]
         
         adcs ULSUM, x0, x1
         // oSum->aulDigits[lIndex] = ulSum;
+        str ULSUM, [PDIGITS3, LINDEX, lsl 3]
+        add LINDEX, LINDEX, 1
+        adcs ULSUM, x2, x3
         str ULSUM, [PDIGITS3, LINDEX, lsl 3]
 
         // update loop variable
         add LINDEX, LINDEX, 1
         // if (lIndex < lSumLength)
-        sub x0, LSUMLENGTH, LINDEX
+        lsr x5, LINDEX, 1
+        sub x0, x4, x5
         cbz x0, endLoop
         b beginLoop
         endLoop:
+        lsl x4, x4, 1
+        sub x4, LSUMLENGTH, x4
+        cbz checkCarry
+        // add last digit 
+        ldr x0, [PDIGITS1, LINDEX, lsl 3]
+        ldr x1, [PDIGITS2, LINDEX, lsl 3]
+        adcs ULSUM, x0, x1
+        str ULSUM, [PDIGITS3, LINDEX, lsl 3]
+        
+        checkCarry:
         //if (ulCarry != 1) goto ulCarrynot1;
         adc x0, xzr, xzr
         cmp x0, 1
@@ -121,18 +138,12 @@ BigInt_add:
         //ulCarrynot1
         ulCarrynot1:
         //osum->lLength = lSumLength;
-        mov LENGTH3, LSUMLENGTH
+        sub PDIGITS3, PDIGITS3, 8
+        str LSUMLENGTH, [PDIGITS3]
 
         //return true;
         mov x0, TRUE
         return:
-        // update BigInt lLengths 
-        sub PDIGITS1, PDIGITS1, 8
-        str LENGTH1, [PDIGITS1]
-        sub PDIGITS2, PDIGITS2, 8
-        str LENGTH2, [PDIGITS2]
-        sub PDIGITS3, PDIGITS3, 8
-        str LENGTH3, [PDIGITS3]
 
         // restore callee saved registers
         ldr LENGTH1, [sp, 8]
@@ -141,7 +152,9 @@ BigInt_add:
         ldr PDIGITS2, [sp, 32]
         ldr LENGTH3, [sp, 40]
         ldr PDIGITS3, [sp, 48]
-        ldr LSUMLENGTH, [sp, 56]
+        ldr ULSUM, [sp, 56]
+        ldr LINDEX, [sp, 64]
+        ldr LSUMLENGTH, [sp, 72]
         
         // restore stack frame
         ldr x30, [sp]
