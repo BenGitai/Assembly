@@ -80,6 +80,7 @@ BigInt_add:
         adds LINDEX, xzr, xzr
         cbz LSUMLENGTH, endLoop
         lsl LSUMLENGTH, LSUMLENGTH, 3
+        add LSUMLENGTH, LSUMLENGTH, PDIGITS3
         mov LINDEX, PDIGITS3
         beginLoop:
         // body of for loop 
@@ -99,6 +100,7 @@ BigInt_add:
         cbz x0, endLoop
         b beginLoop
         endLoop:
+        sub LSUMLENGTH, LSUMLENGTH, PDIGITS3
         lsr LSUMLENGTH, LSUMLENGTH, 3
         //if (ulCarry != 1) goto ulCarrynot1;
         adc x0, xzr, xzr
